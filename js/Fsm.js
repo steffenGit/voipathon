@@ -18,6 +18,9 @@ export class Fsm {
     this.type = undefined;
     this.group = 0;
     this.onopen = undefined;
+    this.groupAttached = undefined;
+    this.onCallReady = undefined;
+    this.onCallEnded = undefined;
   }
 
   setConnection(connection) {
@@ -28,7 +31,7 @@ export class Fsm {
   register(user) {
     if (this.state === REGISTER_STATE.UNREGISTERED) {
       return this.connection.registerReq({
-        user  : user,
+        user : user,
       });
     } else {
       return 0;
@@ -55,6 +58,7 @@ export class Fsm {
   _onGroupAttachAck(message) {
     if (message.result === 200) {
       this.group = message.id;
+      this.groupAttached(this.group);
     }
   }
 
@@ -62,7 +66,7 @@ export class Fsm {
   setupCall(calledId) {
     if (this.state === REGISTER_STATE.REGISTERED && this.callId === 0) {
       return this.connection.setupReq({
-        calledId: calledId
+        calledId : calledId
       })
     } else {
       return 0;
@@ -70,24 +74,27 @@ export class Fsm {
   }
 
   _onSetupAck(message) {
-    if(message.result === 200) {
+    if (message.result === 200) {
       this.callId = message.callId;
       this.type = 'tx';
     } else {
       this.callId = 0;
       this.type = undefined;
+      this.onCallReady(this.id, 'tx');
     }
   }
 
   _onSetupInd(message) {
     this.callId = message.callId;
-    this.type = 'rx'
+    this.type = 'rx';
+    this.onCallReady(message.callingId, 'rx');
   }
 
   disconnectCall(callId) {
+    callId = callId || this.callId;
     if (this.state === REGISTER_STATE.REGISTERED && this.callId !== 0 && this.type === 'rx') {
       return this.connection.disconnectReq({
-        callId: callId
+        callId : callId
       })
     } else {
       return 0;
@@ -98,13 +105,14 @@ export class Fsm {
     if (message.result === 200) {
       this.callId = 0;
       this.type = undefined;
-
+      this.onCallEnded(message.callId);
     }
   }
 
   _onDisconnectInd(message) {
     this.callId = 0;
     this.type = undefined;
+    this.onCallEnded(message.callId);
   }
 
 

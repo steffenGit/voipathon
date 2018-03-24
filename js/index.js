@@ -1,5 +1,8 @@
 import {Fsm} from './Fsm.js';
 import {Connection} from './connection.js';
+import {Audio} from './audio.js';
+
+let ADDRESS = 'google.de';
 
 let speaking = false;
 let selected = null;
@@ -7,11 +10,13 @@ let isUsernameSet = false;
 let isOtherParticipantTalking = false;
 let fsm = undefined;
 let connection = undefined;
-
+let audio = undefined;
 window.addEventListener("load", function () {
   connection = new Connection();
   fsm = new Fsm();
+  audio = new Audio();
   connection.setFsm(fsm);
+  //connection.setAudioDestination(audio);
   fsm.setConnection(connection);
 
   initButton();
@@ -23,12 +28,16 @@ window.addEventListener("load", function () {
       document.getElementById("userInfoDiv").appendChild(document.createTextNode("Username: " + textFieldValue));
       isUsernameSet = true;
 
-      connection.connect('google.de');
+
+      connection.connect(ADDRESS);
       connection.onopen = function() {
-        fsm.register(textFieldValue);
         fsm.onopen = function() {
           location.href = "#";
-        }
+        };
+        fsm.onCallEnded = nooneIsTalking;
+        fsm.onCallReady = otherParticipantIsTalking;
+        fsm.register(textFieldValue);
+
       };
     }
   });
@@ -64,16 +73,16 @@ function initButton() {
   pttButton.addEventListener("mousedown", function () {
     if (!isOtherParticipantTalking) {
       this.style.backgroundColor = "#dc3545";
-      this.style.color = "#fff"
-      //todo start call / demant tx
+      this.style.color = "#fff";
+      fsm.setupCall(selected.textContent);
     }
   });
 
   pttButton.addEventListener("mouseup", function () {
     if (!isOtherParticipantTalking) {
       this.style.backgroundColor = "#fff";
-      this.style.color = "#dc3545"
-      // todo cease tx
+      this.style.color = "#dc3545";
+      fsm.disconnectCall();
     }
   });
 }
@@ -103,6 +112,7 @@ function addGroup(group) {
     this.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
     selected = this;
     //todo attach group
+    fsm.attachGroup(selected.textContent);
   });
 }
 
@@ -137,12 +147,18 @@ function removeGroup(group) {
   removeItemFromList(document.getElementById("groupList"), group);
 }
 
-function otherParticipantIsTalking(participant) {
-  let pttButton = document.getElementById("PTTButton");
-  let surroundingDiv = document.getElementById("pttDiv");
-  pttButton.textContent = participant;
-  pttButton.style.fontSize = (surroundingDiv.offsetWidth * 0.1) + "px";
-  isOtherParticipantTalking = true;
+function otherParticipantIsTalking(participant, type) {
+
+  if(type === 'tx') {
+    audio.startRecording();
+  } else {
+    let pttButton = document.getElementById("PTTButton");
+    let surroundingDiv = document.getElementById("pttDiv");
+    pttButton.textContent = participant;
+    pttButton.style.fontSize = (surroundingDiv.offsetWidth * 0.1) + "px";
+    isOtherParticipantTalking = true;
+    // play audio
+  }
 }
 
 function nooneIsTalking() {
@@ -151,4 +167,5 @@ function nooneIsTalking() {
   pttButton.textContent = "PTT";
   pttButton.style.fontSize = (surroundingDiv.offsetWidth * 0.3) + "px";
   isOtherParticipantTalking = false;
+  audio.stopRecording();
 }
