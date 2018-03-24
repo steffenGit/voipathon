@@ -23,7 +23,10 @@ export class Connection {
   }
 
   _send(message) {
+    if(this.state === STATES.DISCONNECTED)
+      return 0;
     this.socket.send(message);
+    return 1;
   }
 
   _onOpen(event) {
@@ -47,18 +50,6 @@ export class Connection {
       case 'setup_ind':
         this.fsm._onSetupInd(message.payload);
         break;
-      case 'connect_ack':
-        this.fsm._onConnectAck(message.payload);
-        break;
-      case 'txDemand_ack':
-        this.fsm._onTxDemandAck(message.payload);
-        break;
-      case 'txCeased_ack':
-        this.fsm._onTxCeasedAck(message.payload);
-        break;
-      case 'txInfo_ind':
-        this.fsm._onTxInfoInd(message.payload);
-        break;
       case 'disconnect_ack':
         this.fsm._onDisconnectAck(message.payload);
         break;
@@ -69,59 +60,45 @@ export class Connection {
   }
 
   registerReq(payload) {
-    this._send({
+    return this._send({
       type: 'register_req',
       payload: payload
     });
   }
 
   groupAttachReq(payload) {
-    this._send({
-      type: 'groupAttach_req',
-      payload: payload
-    });
-  }
-
-  groupAttachReq(payload) {
-    this._send({
+    return this._send({
       type: 'groupAttach_req',
       payload: payload
     });
   }
 
   setupReq(payload) {
-    this._send({
+    return this._send({
       type: 'setup_req',
       payload: payload
     });
   }
 
   setupRes(payload) {
-    this._send({
+    return this._send({
       type: 'setup_res',
       payload: payload
     });
   }
 
-  connectReq(payload) {
-    this._send({
-      type: 'connect_req',
+  disconnectReq(payload) {
+    return this._send({
+      type: 'disconnect_req',
       payload: payload
     });
   }
 
-  txDemandReq(payload) {
-    this._send({
-      type: 'txDemand_req',
+  sendAudio(payload) {
+    return this._send({
+      type: 'audio',
       payload: payload
-    });
-  }
-
-  txCeasedReq(payload) {
-    this._send({
-      type: 'txCeased_req',
-      payload: payload
-    });
+    })
   }
 
   _onClose(event) {

@@ -1,6 +1,6 @@
 "use strict";
-import {Fsm} from 'fsm';
-import {STATES, Connection} from './connection';
+import {Fsm} from './fsm.js';
+import {STATES, Connection} from './connection.js';
 
 class App {
 
