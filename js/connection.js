@@ -38,7 +38,7 @@ export class Connection {
   _onMessage(message) {
     switch (message.type) {
       case 'audio':
-        this.audioDestination.play(message.payload);
+        this.audioDestination.onAudio(message.payload);
         break;
       case 'register_ack':
         this.fsm._onRegisterAck(message.payload);

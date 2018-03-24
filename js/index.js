@@ -15,8 +15,9 @@ window.addEventListener("load", function () {
   connection = new Connection();
   fsm = new Fsm();
   audio = new Audio();
+  audio.setConnection(connection);
   connection.setFsm(fsm);
-  //connection.setAudioDestination(audio);
+  connection.setAudioDestination(audio);
   fsm.setConnection(connection);
 
   initButton();
