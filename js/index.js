@@ -1,3 +1,5 @@
+let speaking = false;
+
 window.addEventListener("load", function () {
     setButtonSize();
 });
@@ -14,21 +16,29 @@ function setButtonSize() {
     pttButton.style.width = size;
     pttButton.style.fontSize = (surroundingDiv.offsetWidth * 0.3) + "px";
 
-    pttButton.addEventListener("mouseover", function () {
-        console.log("bla");
+    pttButton.addEventListener("mousedown", function () {
+        this.style.backgroundColor = "#dc3545";
+        this.style.color = "#fff"
+    });
+
+    pttButton.addEventListener("mouseup", function () {
+        this.style.backgroundColor = "#fff";
+        this.style.color = "#dc3545"
     });
 }
 
 document.addEventListener("keydown", function(event) {
-    if(event.which === 32) {
-        document.getElementById("PTTButton").onmousedown();
-        document.getElementById("PTTButton").onmouseover();
+    if(event.which === 32 && !speaking) {
+        speaking = true;
+        document.getElementById("PTTButton").dispatchEvent(new Event("mousedown"));
+        document.getElementById("PTTButton").dispatchEvent(new Event("mouseover"));
     }
 });
 
-document.addEventListener("keyup", function () {
+document.addEventListener("keyup", function (event) {
    if(event.which === 32) {
-       document.getElementById("PTTButton").onmouseup();
-       document.getElementById("PTTButton").onmouseout();
+       speaking = false;
+       document.getElementById("PTTButton").dispatchEvent(new Event("mouseup"));
+       document.getElementById("PTTButton").dispatchEvent(new Event("mouseout"));
    }
 });
