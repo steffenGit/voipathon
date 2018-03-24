@@ -20,6 +20,9 @@ export class Connection {
 
   connect(address) {
     this.socket = new WebSocket(address);
+    this.socket.onopen = this._onOpen;
+    this.socket.onmessage = this._onMessage;
+    this.socket.onerror = this._onError;
 
   }
 
