@@ -24,16 +24,29 @@ export class Fsm {
   }
 
 
+  register(user, token) {
+
+  }
+
   _onRegisterAck(message) {
     if (message.result === 200) {
       this.registerState = REGISTER_STATE.REGISTERED;
     }
   }
 
+  attachGroup(groupId) {
+
+  }
+
   _onGroupAttachAck(message) {
     if (message.result === 200) {
       this.group = message.id;
     }
+  }
+
+
+  setupCall(type, calledId) {
+
   }
 
   _onSetupAck(message) {
@@ -46,14 +59,26 @@ export class Fsm {
 
   }
 
+  connectCall(callId) {
+
+  }
+
   _onConnectAck(message) {
     if (message.result === 200) {
 
     }
   }
 
+  demandTx(callId) {
+
+  }
+
   _onTxDemandAck(message) {
     // TODO: needed here?
+  }
+
+  ceaseTx(callId) {
+
   }
 
   _onTxCeasedAck(message) {
@@ -64,16 +89,18 @@ export class Fsm {
 
   }
 
+  disconnectCall(callId) {
+
+  }
+
   _onDisconnectAck(message) {
     if (message.result === 200) {
-      
+
     }
   }
 
-
-
   _onDisconnectInd(message) {
-    this.call = undefined;
+
   }
 
 

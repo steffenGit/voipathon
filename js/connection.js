@@ -124,6 +124,13 @@ export class Connection {
     });
   }
 
+  sendAudio(payload) {
+    this._send({
+      type: 'audio',
+      payload: payload
+    })
+  }
+
   _onClose(event) {
     this.state = STATES.DISCONNECTED;
   }
