@@ -90,3 +90,21 @@ function addToList(list, item, func) {
     listItem.className = "list-group-item";
     list.appendChild(listItem);
 }
+
+
+function removeItemFromList(list, item) {
+    for (let i = 0; i < list.children.length; i++) {
+        console.log(list.children[i].textContent);
+        if (list.children[i].textContent == item) {
+            list.removeChild(list.children[i]);
+        }
+    }
+}
+
+function removeParticipant(user) {
+    removeItemFromList(document.getElementById("participantList"), user);
+}
+
+function removeGroup(group) {
+    removeItemFromList(document.getElementById("groupList"), group);
+}
