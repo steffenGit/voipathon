@@ -31,11 +31,13 @@ export class Connection {
   }
 
   _onOpen(event) {
+    console.log(event);
     this.state = STATES.CONNECTED;
     this.onopen();
   }
 
   _onMessage(message) {
+    console.log(message);
     switch (message.type) {
       case 'audio':
         this.audioDestination.onAudio(message.payload);
@@ -104,10 +106,12 @@ export class Connection {
   }
 
   _onClose(event) {
+    console.log(event);
     this.state = STATES.DISCONNECTED;
   }
 
   _onError(event) {
+    console.log(event);
     this.state = STATES.DISCONNECTED;
   }
 
