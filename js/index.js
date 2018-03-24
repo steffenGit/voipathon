@@ -1,6 +1,7 @@
 let speaking = false;
 let selected = null;
 let isUsernameSet = false;
+let isOtherParticipantTalking = false;
 
 window.addEventListener("load", function () {
     initButton();
@@ -28,7 +29,9 @@ window.addEventListener("load", function () {
 });
 
 window.addEventListener("resize", function () {
-    initButton();
+    if (!isOtherParticipantTalking) {
+        initButton();
+    }
 });
 
 function initButton() {
@@ -42,13 +45,19 @@ function initButton() {
     pttButton.style.color = "#dc3545";
 
     pttButton.addEventListener("mousedown", function () {
-        this.style.backgroundColor = "#dc3545";
-        this.style.color = "#fff"
+        if (!isOtherParticipantTalking) {
+            this.style.backgroundColor = "#dc3545";
+            this.style.color = "#fff"
+            //todo start call / demant tx
+        }
     });
 
     pttButton.addEventListener("mouseup", function () {
-        this.style.backgroundColor = "#fff";
-        this.style.color = "#dc3545"
+        if (!isOtherParticipantTalking) {
+            this.style.backgroundColor = "#fff";
+            this.style.color = "#dc3545"
+            // todo cease tx
+        }
     });
 }
 
@@ -72,9 +81,11 @@ function addGroup(group) {
     addToList(document.getElementById("groupList"), group, function () {
         if (selected !== null) {
             selected.style.backgroundColor = "#fff";
+            //todo detach group
         }
         this.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
         selected = this;
+        //todo attach group
     });
 }
 
@@ -95,7 +106,7 @@ function addToList(list, item, func) {
 function removeItemFromList(list, item) {
     for (let i = 0; i < list.children.length; i++) {
         console.log(list.children[i].textContent);
-        if (list.children[i].textContent == item) {
+        if (list.children[i].textContent === item) {
             list.removeChild(list.children[i]);
         }
     }
@@ -107,4 +118,20 @@ function removeParticipant(user) {
 
 function removeGroup(group) {
     removeItemFromList(document.getElementById("groupList"), group);
+}
+
+function otherParticipantIsTalking(participant) {
+    let pttButton = document.getElementById("PTTButton");
+    let surroundingDiv = document.getElementById("pttDiv");
+    pttButton.textContent = participant;
+    pttButton.style.fontSize = (surroundingDiv.offsetWidth * 0.1) + "px";
+    isOtherParticipantTalking = true;
+}
+
+function nooneIsTalking() {
+    let pttButton = document.getElementById("PTTButton");
+    let surroundingDiv = document.getElementById("pttDiv");
+    pttButton.textContent = "PTT";
+    pttButton.style.fontSize = (surroundingDiv.offsetWidth * 0.3) + "px";
+    isOtherParticipantTalking = false;
 }
