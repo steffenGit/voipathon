@@ -3,13 +3,12 @@
  */
 "use strict";
 
-let mediaRecorder;
-let recordedChunks;
-let sourceBuffer;
-
-
 export class Audio {
     constructor() {
+
+        this.mediaRecorder = null;
+        this.recordedChunks = null;
+        this.sourceBuffer = null;
 
         // Empty constructor
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -46,13 +45,13 @@ export class Audio {
         mediaRecorder.onstop = audio.handleStop;
         mediaRecorder.ondataavailable = audio.handleDataAvailable;
 
-        mediaRecorder.start(30); // collect 10ms of data
+        mediaRecorder.start(30); // collect 30ms of data
         console.log('MediaRecorder started', mediaRecorder);
     }
 
     stopRecording() {
         mediaRecorder.stop();
-        console.log('Recorded Blobs: ', recordedChunks);
+        console.log('Recorded Chunks: ', recordedChunks);
     }
 
     handleStop() {
