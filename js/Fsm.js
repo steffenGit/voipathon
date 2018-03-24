@@ -17,6 +17,7 @@ export class Fsm {
     this.callId = 0;
     this.type = undefined;
     this.group = 0;
+    this.onopen = undefined;
   }
 
   setConnection(connection) {
@@ -37,6 +38,7 @@ export class Fsm {
   _onRegisterAck(message) {
     if (message.result === 200) {
       this.state = REGISTER_STATE.REGISTERED;
+      this.onopen();
     }
   }
 

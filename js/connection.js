@@ -15,6 +15,7 @@ export class Connection {
     this.state = STATES.DISCONNECTED;
     this.fsm = undefined;
     this.audioDestination = undefined;
+    this.onopen = undefined;
   }
 
   connect(address) {
@@ -31,6 +32,7 @@ export class Connection {
 
   _onOpen(event) {
     this.state = STATES.CONNECTED;
+    this.onopen();
   }
 
   _onMessage(message) {
