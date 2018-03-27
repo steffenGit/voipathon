@@ -3,8 +3,8 @@
  */
 "use strict";
 export const STATES = {
-  DISCONNECTED : 0,
-  CONNECTED    : 1,
+  DISCONNECTED: 0,
+  CONNECTED: 1,
 };
 
 export class Connection {
@@ -19,17 +19,20 @@ export class Connection {
   }
 
   connect(address) {
+    console.log("Opening websocket");
     this.socket = new WebSocket(address);
-    this.socket.onopen = this._onOpen;
-    this.socket.onmessage = this._onMessage;
-    this.socket.onerror = this._onError;
+    console.log("websocket open");
+    //make sure to propergate te correct this context
+    this.socket.onopen = (ev) => { this._onOpen(ev); };
+    this.socket.onmessage = (ev) => { console.log("onMessage"); this._onMessage(ev); };
+    this.socket.onerror = (ev) => { this._onError(ev); };
 
   }
 
   _send(message) {
-    if(this.state === STATES.DISCONNECTED)
+    if (this.state === STATES.DISCONNECTED)
       return 0;
-    this.socket.send(message);
+    this.socket.send(JSON.stringify(message));
     return 1;
   }
 
@@ -39,8 +42,10 @@ export class Connection {
     this.onopen();
   }
 
-  _onMessage(message) {
-    console.log(message);
+  _onMessage(event) {
+    const message = JSON.parse(event.data);
+    console.log("_onMessage:: message: ", message);
+    console.log("_onMessage:: message.type: ", message.type);
     switch (message.type) {
       case 'audio':
         this.audioDestination.onAudio(message.payload);
@@ -74,6 +79,7 @@ export class Connection {
   }
 
   groupAttachReq(payload) {
+    console.log("groupAttachReq:: payload: ", payload);
     return this._send({
       type: 'groupAttach_req',
       payload: payload
