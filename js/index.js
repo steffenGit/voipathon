@@ -1,9 +1,8 @@
-import {Fsm} from './Fsm.js';
-import {Connection} from './connection.js';
-import {Audio} from './audio.js';
+import { Fsm } from './Fsm.js';
+import { Connection } from './connection.js';
+import { Audio } from './audio.js';
 
-let ADDRESS = 'google.de';
-
+let ADDRESS = 'ws://localhost:4242/ws';
 let speaking = false;
 let selected = null;
 let isUsernameSet = false;
@@ -23,6 +22,8 @@ window.addEventListener("load", function () {
   initButton();
   location.href = "#popup1";
 
+
+
   document.getElementById("usernameOkButton").addEventListener("click", function () {
     let textFieldValue = document.getElementById("usernameTF").value;
     if (textFieldValue !== "" && textFieldValue !== null && !isUsernameSet) {
@@ -31,8 +32,9 @@ window.addEventListener("load", function () {
 
 
       connection.connect(ADDRESS);
-      connection.onopen = function() {
-        fsm.onopen = function() {
+      connection.onopen = function () {
+        console.log("connection on open")
+        fsm.onopen = function () {
           location.href = "#";
         };
         fsm.onCallEnded = nooneIsTalking;
@@ -150,7 +152,7 @@ function removeGroup(group) {
 
 function otherParticipantIsTalking(participant, type) {
 
-  if(type === 'tx') {
+  if (type === 'tx') {
     audio.startRecording();
   } else {
     let pttButton = document.getElementById("PTTButton");
