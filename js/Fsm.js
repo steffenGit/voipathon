@@ -20,6 +20,7 @@ export class Fsm {
     // this.groupAttached = undefined;
     this.groupAttached = groupID => {
       console.log('Attached to group: ', groupID);
+      this.group = groupID;
     };
     this.onCallReady = undefined;
     this.onCallEnded = undefined;
@@ -64,9 +65,13 @@ export class Fsm {
   }
 
   setupCall(calledId) {
+    console.log(
+      'FSM::setupCall - ignoring calledID parameter and using this.group instead: ',
+      this.group
+    );
     if (this.state === REGISTER_STATE.REGISTERED && this.callId === 0) {
       return this.connection.setupReq({
-        calledId: calledId
+        calledId: this.group
       });
     } else {
       return 0;
