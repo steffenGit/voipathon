@@ -1,13 +1,12 @@
 /**
  * Created by peleikis on 24.03.2018.
  */
-"use strict";
+'use strict';
 
 export const REGISTER_STATE = {
-  UNREGISTERED : 0,
-  REGISTERED   : 1,
+  UNREGISTERED: 0,
+  REGISTERED: 1
 };
-
 
 export class Fsm {
   constructor() {
@@ -18,7 +17,10 @@ export class Fsm {
     this.type = undefined;
     this.group = 0;
     this.onopen = undefined;
-    this.groupAttached = undefined;
+    // this.groupAttached = undefined;
+    this.groupAttached = groupID => {
+      console.log('Attached to group: ', groupID);
+    };
     this.onCallReady = undefined;
     this.onCallEnded = undefined;
   }
@@ -27,11 +29,10 @@ export class Fsm {
     this.connection = connection;
   }
 
-
   register(user) {
     if (this.state === REGISTER_STATE.UNREGISTERED) {
       return this.connection.registerReq({
-        user : user,
+        user: user
       });
     } else {
       return 0;
@@ -48,7 +49,7 @@ export class Fsm {
   attachGroup(groupId) {
     if (this.state === REGISTER_STATE.REGISTERED) {
       return this.connection.groupAttachReq({
-        id : groupId
+        id: groupId
       });
     } else {
       return 0;
@@ -62,12 +63,11 @@ export class Fsm {
     }
   }
 
-
   setupCall(calledId) {
     if (this.state === REGISTER_STATE.REGISTERED && this.callId === 0) {
       return this.connection.setupReq({
-        calledId : calledId
-      })
+        calledId: calledId
+      });
     } else {
       return 0;
     }
@@ -92,10 +92,14 @@ export class Fsm {
 
   disconnectCall(callId) {
     callId = callId || this.callId;
-    if (this.state === REGISTER_STATE.REGISTERED && this.callId !== 0 && this.type === 'rx') {
+    if (
+      this.state === REGISTER_STATE.REGISTERED &&
+      this.callId !== 0 &&
+      this.type === 'rx'
+    ) {
       return this.connection.disconnectReq({
-        callId : callId
-      })
+        callId: callId
+      });
     } else {
       return 0;
     }
@@ -114,7 +118,4 @@ export class Fsm {
     this.type = undefined;
     this.onCallEnded(message.callId);
   }
-
-
 }
-

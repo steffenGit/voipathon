@@ -1,15 +1,13 @@
 /**
  * Created by peleikis on 24.03.2018.
  */
-"use strict";
+'use strict';
 export const STATES = {
   DISCONNECTED: 0,
-  CONNECTED: 1,
+  CONNECTED: 1
 };
 
 export class Connection {
-
-
   constructor() {
     this.socket = undefined;
     this.state = STATES.DISCONNECTED;
@@ -19,19 +17,24 @@ export class Connection {
   }
 
   connect(address) {
-    console.log("Opening websocket");
+    console.log('Opening websocket');
     this.socket = new WebSocket(address);
-    console.log("websocket open");
+    console.log('websocket open');
     //make sure to propergate te correct this context
-    this.socket.onopen = (ev) => { this._onOpen(ev); };
-    this.socket.onmessage = (ev) => { console.log("onMessage"); this._onMessage(ev); };
-    this.socket.onerror = (ev) => { this._onError(ev); };
-
+    this.socket.onopen = ev => {
+      this._onOpen(ev);
+    };
+    this.socket.onmessage = ev => {
+      console.log('onMessage');
+      this._onMessage(ev);
+    };
+    this.socket.onerror = ev => {
+      this._onError(ev);
+    };
   }
 
   _send(message) {
-    if (this.state === STATES.DISCONNECTED)
-      return 0;
+    if (this.state === STATES.DISCONNECTED) return 0;
     this.socket.send(JSON.stringify(message));
     return 1;
   }
@@ -44,8 +47,8 @@ export class Connection {
 
   _onMessage(event) {
     const message = JSON.parse(event.data);
-    console.log("_onMessage:: message: ", message);
-    console.log("_onMessage:: message.type: ", message.type);
+    console.log('_onMessage:: message: ', message);
+    console.log('_onMessage:: message.type: ', message.type);
     switch (message.type) {
       case 'audio':
         this.audioDestination.onAudio(message.payload);
@@ -79,7 +82,7 @@ export class Connection {
   }
 
   groupAttachReq(payload) {
-    console.log("groupAttachReq:: payload: ", payload);
+    console.log('groupAttachReq:: payload: ', payload);
     return this._send({
       type: 'groupAttach_req',
       payload: payload
@@ -111,7 +114,7 @@ export class Connection {
     return this._send({
       type: 'audio',
       payload: payload
-    })
+    });
   }
 
   _onClose(event) {
@@ -131,7 +134,4 @@ export class Connection {
   setAudioDestination(audiodestination) {
     this.audioDestination = audiodestination;
   }
-
-
-
 }
