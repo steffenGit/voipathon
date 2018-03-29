@@ -1,11 +1,10 @@
 /**
  * Created by hermes on 24.03.2018.
  */
-"use strict";
+'use strict';
 
 export class Audio {
   constructor() {
-
     this.mediaRecorder = null;
     this.recordedChunks = null;
     this.sourceBuffer = null;
@@ -13,23 +12,23 @@ export class Audio {
     // Empty constructor
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       console.log('getUserMedia supported.');
-      navigator.mediaDevices.getUserMedia({audio : true, video : false})
-        .then(function (stream) {
+      navigator.mediaDevices
+        .getUserMedia({ audio: true, video: false })
+        .then(function(stream) {
           window.stream = stream;
           console.log('getUserMedia() got stream: ', stream);
         })
-        .catch(function (err) {
+        .catch(function(err) {
           console.error('The following getUserMedia error occured: ' + err);
         });
     } else {
       console.log('getUserMedia not supported on your browser!');
     }
-
   }
 
   startRecording() {
     this.recordedChunks = [];
-    const options = {mimeType : 'audio/webm;codecs=opus'};
+    const options = { mimeType: 'audio/webm;codecs=opus' };
     if (!MediaRecorder.isTypeSupported(options.mimeType)) {
       console.log(options.mimeType + ' is not Supported');
     }
@@ -37,10 +36,15 @@ export class Audio {
       this.mediaRecorder = new MediaRecorder(window.stream, options);
     } catch (err) {
       console.error('Exception while creating MediaRecorder: ' + err);
-      alert('Exception while creating MediaRecorder: ' + err);
+      // alert('Exception while creating MediaRecorder: ' + err);
       return;
     }
-    console.log('Created MediaRecorder', this.mediaRecorder, 'with options', options);
+    console.log(
+      'Created MediaRecorder',
+      this.mediaRecorder,
+      'with options',
+      options
+    );
 
     this.mediaRecorder.onstop = this.handleStop;
     this.mediaRecorder.ondataavailable = this.handleDataAvailable;
@@ -56,7 +60,7 @@ export class Audio {
 
   handleStop() {
     console.log('Recorder stopped: ', event);
-    console.log('Recorded data length: ', this.recordedChunks.length)
+    console.log('Recorded data length: ', this.recordedChunks.length);
   }
 
   handleDataAvailable() {

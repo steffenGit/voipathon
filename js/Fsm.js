@@ -50,7 +50,7 @@ export class Fsm {
   attachGroup(groupId) {
     if (this.state === REGISTER_STATE.REGISTERED) {
       return this.connection.groupAttachReq({
-        id: groupId
+        groupID: groupId
       });
     } else {
       return 0;
@@ -59,7 +59,7 @@ export class Fsm {
 
   _onGroupAttachAck(message) {
     if (message.result === 200) {
-      this.group = message.id;
+      this.group = message.groupId;
       this.groupAttached(this.group);
     }
   }
@@ -71,7 +71,7 @@ export class Fsm {
     );
     if (this.state === REGISTER_STATE.REGISTERED && this.callId === 0) {
       return this.connection.setupReq({
-        calledId: this.group
+        groupId: this.group
       });
     } else {
       return 0;
@@ -90,7 +90,7 @@ export class Fsm {
   }
 
   _onSetupInd(message) {
-    this.callId = message.callId;
+    this.callId = message.groupId;
     this.type = 'rx';
     this.onCallReady(message.callingId, 'rx');
   }
