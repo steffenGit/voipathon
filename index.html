@@ -19,8 +19,41 @@
 
     <!-- responsive ☺ -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script type="module" src="./js/index.js"></script>
+    <link rel="stylesheet" href="./style/index.css">
 </head>
 <body>
-
+<div id="popup1" class="overlay">
+    <div class="popup">
+        <h2>Username</h2>
+        <div class="content">
+            <input type="text" id="usernameTF">
+            <button type="button" class="btn btn-outline-success btn-sm" id="usernameOkButton">Ok</button>
+        </div>
+    </div>
+</div>
+<div id="userInfoDiv">
+</div>
+<br>
+<div>
+    <div class="row">
+        <div class="col-sm-6" id="pttDiv">
+            <center>
+                <button type="button" class="btn btn-outline-danger" id="PTTButton">PTT</button>
+            </center>
+        </div>
+        <div class="col-sm-3">
+            <h1>Participants</h1>
+            <ul class="list-group" id="participantList">
+            </ul>
+        </div>
+        <div class="col-sm-3">
+            <h1>Groups</h1>
+            <ul class="list-group" id="groupList">
+            </ul>
+        </div>
+    </div>
+</div>
 </body>
 </html>
